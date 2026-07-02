@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function Signup() {
   const navigate = useNavigate();
@@ -9,34 +10,59 @@ function Signup() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const handleSignup = (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
 
-    // check all fields
+    // Check all fields
     if (!name || !email || !password || !confirmPassword) {
-      alert("Please fill all fields");
+      alert("Please fill all fields.");
       return;
     }
 
-    // password match check
+    // Password match check
     if (password !== confirmPassword) {
-      alert("Passwords do not match");
+      alert("Passwords do not match.");
       return;
     }
 
-    alert("Account created successfully!");
+    // Strong password validation
+    const strongPassword =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
 
-    // go back to login page
-    navigate("/");
+    if (!strongPassword.test(password)) {
+      alert(
+        "Password must be at least 8 characters and include an uppercase letter, lowercase letter, number, and special character."
+      );
+      return;
+    }
+
+    try {
+      await axios.post("http://localhost:5000/signup", {
+        name,
+        email,
+        password,
+      });
+
+      alert("Account created successfully!");
+
+      navigate("/");
+    } catch (error) {
+      alert(
+        error.response?.data?.message ||
+          "Signup failed"
+      );
+    }
   };
 
   return (
     <div className="container mt-5">
-      <div className="card p-4 mx-auto shadow" style={{ maxWidth: "400px" }}>
+      <div
+        className="card p-4 mx-auto shadow"
+        style={{ maxWidth: "400px" }}
+      >
         <h2 className="text-center mb-4">Create Account</h2>
 
         <form onSubmit={handleSignup}>
-          {/* Name */}
           <input
             type="text"
             className="form-control mb-3"
@@ -45,7 +71,6 @@ function Signup() {
             onChange={(e) => setName(e.target.value)}
           />
 
-          {/* Email */}
           <input
             type="email"
             className="form-control mb-3"
@@ -54,7 +79,6 @@ function Signup() {
             onChange={(e) => setEmail(e.target.value)}
           />
 
-          {/* Password */}
           <input
             type="password"
             className="form-control mb-3"
@@ -63,7 +87,6 @@ function Signup() {
             onChange={(e) => setPassword(e.target.value)}
           />
 
-          {/* Confirm Password */}
           <input
             type="password"
             className="form-control mb-3"
@@ -72,19 +95,21 @@ function Signup() {
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
 
-          {/* Button */}
-          <button className="btn btn-success w-100" type="submit">
+          <button
+            className="btn btn-success w-100"
+            type="submit"
+          >
             Sign Up
           </button>
         </form>
 
-        {/* Back to Login */}
         <p className="text-center mt-3">
+          Already have an account?{" "}
           <span
             style={{ color: "blue", cursor: "pointer" }}
             onClick={() => navigate("/")}
           >
-            Back to Login
+            Login
           </span>
         </p>
       </div>

@@ -1,105 +1,117 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import axios from "axios";
 function Login() {
-  const navigate = useNavigate();
+const navigate = useNavigate();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [role, setRole] = useState("student");
-  const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+const [email, setEmail] = useState("");
+const [password, setPassword] = useState("");
+const [loading, setLoading] = useState(false);
+const [showPassword, setShowPassword] = useState(false);
+const [error, setError] = useState("");
+const handleLogin = async (e) => {
+  e.preventDefault();
 
-  const handleLogin = (e) => {
-    e.preventDefault();
+  setError("");
 
-    if (email && password) {
-      setLoading(true);
+  if (!email || !password) {
+    setError("Please enter both email and password.");
+    return;
+  }
 
-      setTimeout(() => {
-        setLoading(false);
+  setLoading(true);
 
-        if (role === "admin") {
-          navigate("/admin-dashboard");
-        } else {
-          navigate("/dashboard");
-        }
-      }, 1000); // fake loading for presentation
+  try {
+    const res = await axios.post("http://localhost:5000/login", {
+      email,
+      password,
+    });
+    console.log(res.data);
+    localStorage.setItem("userId", res.data.user._id);
+  
+
+    if (res.data.user.role === "admin") {
+      navigate("/admin-dashboard");
     } else {
-      alert("Please enter email and password");
+      
+      navigate("/dashboard");
     }
-  };
 
-  return (
-    <div className="container mt-5">
-      <div className="card p-4 mx-auto shadow" style={{ maxWidth: "400px" }}>
-        <h2 className="text-center mb-4">CCMS Login</h2>
+  } catch (error) {
+    setLoading(false);
 
-        <form onSubmit={handleLogin}>
-          <input
-            type="email"
-            className="form-control mb-3"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+    console.log(error.response);
 
-         <input
-            type={showPassword ? "text" : "password"}
-            className="form-control mb-3"
-            placeholder="Password"
-            value={password}
-           onChange={(e) => setPassword(e.target.value)}
-          />
-        <div className="form-check mb-3">
-         <input
-             className="form-check-input"
-             type="checkbox"
-             checked={showPassword}
-             onChange={() => setShowPassword(!showPassword)}
-             id="showPassword"
-          />
+    setError(
+      error.response?.data?.message || "Login failed"
+    );
+  }
+};
 
-            <label className="form-check-label" htmlFor="showPassword">
-              Show Password
-            </label>
-        </div>
+return (
+<div className="container mt-5">
+<div className="card p-4 mx-auto shadow" style={{ maxWidth: "400px" }}>
+<h2 className="text-center mb-4">CCMS Login</h2>
 
-          <select
-            className="form-control mb-3"
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-          >
-            <option value="student">Student</option>
-            <option value="admin">Admin</option>
-          </select>
+<form onSubmit={handleLogin}>  
+      <input  
+        type="email"  
+        className="form-control mb-3"  
+        placeholder="Email"  
+        value={email}  
+        onChange={(e) => setEmail(e.target.value)}  
+      />  
 
-          <button className="btn btn-primary w-100" type="submit">
-            {loading ? "Logging in..." : "Login"}
-          </button>
+     <input  
+        type={showPassword ? "text" : "password"}  
+        className="form-control mb-3"  
+        placeholder="Password"  
+        value={password}  
+       onChange={(e) => setPassword(e.target.value)}  
+      />  
+    <div className="form-check mb-3">  
+     <input  
+         className="form-check-input"  
+         type="checkbox"  
+         checked={showPassword}  
+         onChange={() => setShowPassword(!showPassword)}  
+         id="showPassword"  
+      />  
 
-          <p className="text-center mt-3">
-           <span
-            style={{ color: "blue", cursor: "pointer" }}
-           onClick={() => navigate("/forgot-password")}
-           >
-            Forgot Password?
-           </span>
-          </p>
+        <label className="form-check-label" htmlFor="showPassword">  
+          Show Password  
+        </label>  
+    </div>  
 
-        {/* Sign Up link */}
-        <p className="text-center mt-2">
-        <span
-            style={{ color: "blue", cursor: "pointer" }}
-            onClick={() => navigate("/signup")}
-        >
-          Sign Up
-        </span>
-        </p>
-        </form>
-      </div>
-    </div>
-  );
+       
+
+      <button className="btn btn-primary w-100" type="submit">  
+        {loading ? "Logging in..." : "Login"}  
+      </button>  
+
+      <p className="text-center mt-3">  
+       <span  
+        style={{ color: "blue", cursor: "pointer" }}  
+       onClick={() => navigate("/forgot-password")}  
+       >  
+        Forgot Password?  
+       </span>  
+      </p>  
+
+    {/* Sign Up link */}  
+    <p className="text-center mt-2">  
+    <span  
+        style={{ color: "blue", cursor: "pointer" }}  
+        onClick={() => navigate("/signup")}  
+    >  
+      Sign Up  
+    </span>  
+    </p>  
+    </form>  
+  </div>  
+</div>
+
+);
 }
 
 export default Login;

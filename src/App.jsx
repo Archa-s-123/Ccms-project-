@@ -11,6 +11,8 @@ import UpdateStatus from "./pages/UpdateStatus";
 import ComplaintDetails from "./pages/ComplaintDetails";
 import Signup from "./pages/Signup";
 import ForgotPassword from "./pages/ForgotPassword";
+import PrivateRoute from "./pages/PrivateRoute";
+import Profile from "./pages/Profile";
 
 function App() {
   return (
@@ -27,9 +29,28 @@ function App() {
         <Route path="/complaint-details" element={<ComplaintDetails />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route
+  path="/student-dashboard"
+  element={
+    <PrivateRoute>
+      <StudentDashboard />
+    </PrivateRoute>
+  }
+/>
+
+<Route
+  path="/admin-dashboard"
+  element={
+    <PrivateRoute>
+      <AdminDashboard />
+    </PrivateRoute>
+  }
+/>
       </Routes>
     </BrowserRouter>
   );
 }
+
 
 export default App;

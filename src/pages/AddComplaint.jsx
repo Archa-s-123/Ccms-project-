@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function AddComplaint() {
   const navigate = useNavigate();
@@ -8,8 +9,9 @@ function AddComplaint() {
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
   const [location, setLocation] = useState("");
+  const [image, setImage] = useState(null);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!title || !category || !description || !location) {
@@ -17,43 +19,60 @@ function AddComplaint() {
       return;
     }
 
-    const newComplaint = {
-      title,
-      category,
-      description,
-      location,
-      status: "Pending"
-    };
+   const formData = new FormData();
 
-    let complaints =
-      JSON.parse(localStorage.getItem("complaints")) || [];
+formData.append("title", title);
+formData.append("category", category);
+formData.append("description", description);
+formData.append("location", location);
 
-    complaints.push(newComplaint);
+if (image) {
+  formData.append("image", image);
+}
 
-    localStorage.setItem("complaints", JSON.stringify(complaints));
+try {
+  await axios.post(
+    "http://localhost:5000/complaints",
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
 
-    alert("Complaint submitted successfully!");
+  alert("Complaint submitted successfully!");
 
-    setTitle("");
-    setCategory("");
-    setDescription("");
-    setLocation("");
+  setTitle("");
+  setCategory("");
+  setDescription("");
+  setLocation("");
+  setImage(null);
+
+  navigate("/my-complaints");
+} catch (error) {
+      console.log(error);
+      alert("Error submitting complaint");
+    }
   };
 
   return (
     <div className="container mt-5">
 
-      <div className="card shadow p-4 mx-auto" style={{ maxWidth: "650px" }}>
+      <div
+        className="card shadow p-4 mx-auto"
+        style={{ maxWidth: "650px" }}
+      >
 
-        {/* Header */}
         <div className="text-center mb-4">
           <h3>📝 Add Complaint</h3>
-          <p className="text-muted">Submit your issue clearly</p>
+          <p className="text-muted">
+            Submit your complaint clearly
+          </p>
         </div>
 
         <form onSubmit={handleSubmit}>
 
-          {/* Title */}
           <label className="form-label">Complaint Title</label>
           <input
             type="text"
@@ -63,7 +82,6 @@ function AddComplaint() {
             onChange={(e) => setTitle(e.target.value)}
           />
 
-          {/* Category */}
           <label className="form-label">Category</label>
           <select
             className="form-control mb-3"
@@ -79,7 +97,6 @@ function AddComplaint() {
             <option>Electrical</option>
           </select>
 
-          {/* Description */}
           <label className="form-label">Description</label>
           <textarea
             className="form-control mb-3"
@@ -89,7 +106,6 @@ function AddComplaint() {
             onChange={(e) => setDescription(e.target.value)}
           ></textarea>
 
-          {/* Location */}
           <label className="form-label">Location</label>
           <input
             type="text"
@@ -98,9 +114,19 @@ function AddComplaint() {
             value={location}
             onChange={(e) => setLocation(e.target.value)}
           />
+          <label className="form-label">Upload Image</label>
 
-          {/* Buttons */}
-          <button className="btn btn-primary w-100 mb-2" type="submit">
+          <input
+             type="file"
+             className="form-control mb-4"
+             accept="image/*"
+             onChange={(e) => setImage(e.target.files[0])}
+          />
+
+          <button
+            className="btn btn-primary w-100 mb-2"
+            type="submit"
+          >
             Submit Complaint
           </button>
 
@@ -113,7 +139,9 @@ function AddComplaint() {
           </button>
 
         </form>
+
       </div>
+
     </div>
   );
 }
