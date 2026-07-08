@@ -45,7 +45,7 @@ function Signup() {
 
       alert("Account created successfully!");
 
-      navigate("/");
+      navigate("/login");
     } catch (error) {
       alert(
         error.response?.data?.message ||
@@ -107,7 +107,7 @@ function Signup() {
           Already have an account?{" "}
           <span
             style={{ color: "blue", cursor: "pointer" }}
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/login")}
           >
             Login
           </span>

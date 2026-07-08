@@ -21,6 +21,12 @@ const complaintSchema = new mongoose.Schema({
     required: true,
   },
 
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+
   status: {
     type: String,
     default: "Pending",
@@ -30,10 +36,11 @@ const complaintSchema = new mongoose.Schema({
     type: String,
     default: () => new Date().toLocaleString(),
   },
+
   image: {
-  type: String,
-  default: "",
-},
+    type: String,
+    default: "",
+  },
 });
 
 module.exports = mongoose.model("Complaint", complaintSchema);

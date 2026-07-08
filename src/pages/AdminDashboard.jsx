@@ -16,13 +16,22 @@ function AdminDashboard() {
   const navigate = useNavigate();
 
   const [complaints, setComplaints] = useState([]);
+  const [admin, setAdmin] = useState({});
+useEffect(() => {
+  axios
+    .get("http://localhost:5000/complaints")
+    .then((res) => setComplaints(res.data))
+    .catch((err) => console.log(err));
 
-  useEffect(() => {
-    axios
-      .get("http://localhost:5000/complaints")
-      .then((res) => setComplaints(res.data))
-      .catch((err) => console.log(err));
-  }, []);
+  const userId = localStorage.getItem("userId");
+
+  axios
+    .get(`http://localhost:5000/profile/${userId}`)
+    .then((res) => setAdmin(res.data))
+    .catch((err) => console.log(err));
+
+}, []);
+  
 
   const total = complaints.length;
   const pending = complaints.filter(
@@ -66,12 +75,32 @@ function AdminDashboard() {
     <div className="d-flex align-items-center gap-2">
       <span className="text-secondary small">Admin</span>
 
-      <div
-        className="bg-dark text-white rounded-circle d-flex align-items-center justify-content-center"
-        style={{ width: "32px", height: "32px" }}
-      >
-        <i className="bi bi-shield-lock"></i>
-      </div>
+      {admin.profileImage ? (
+  <img
+    src={`http://localhost:5000/uploads/${admin.profileImage}`}
+    alt="Admin"
+    className="rounded-circle"
+    width="35"
+    height="35"
+    style={{
+      objectFit: "cover",
+      cursor: "pointer",
+    }}
+    onClick={() => navigate("/profile")}
+  />
+) : (
+  <div
+    className="bg-dark text-white rounded-circle d-flex align-items-center justify-content-center"
+    style={{
+      width: "35px",
+      height: "35px",
+      cursor: "pointer",
+    }}
+    onClick={() => navigate("/profile")}
+  >
+    <i className="bi bi-shield-lock"></i>
+  </div>
+)}
     </div>
   </header>
 
@@ -170,7 +199,7 @@ function AdminDashboard() {
         <div
           className="card shadow-sm p-4 text-center rounded-4 h-100"
           style={{ cursor: "pointer" }}
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/login")}
         >
           <i className="bi bi-box-arrow-right fs-2 text-danger mb-2"></i>
           <h5>Logout</h5>

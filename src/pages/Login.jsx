@@ -28,7 +28,7 @@ const handleLogin = async (e) => {
     });
     console.log(res.data);
     localStorage.setItem("userId", res.data.user._id);
-  
+    localStorage.setItem("role", res.data.user.role);
 
     if (res.data.user.role === "admin") {
       navigate("/admin-dashboard");

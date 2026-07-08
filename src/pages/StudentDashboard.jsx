@@ -156,7 +156,7 @@ function StudentDashboard() {
             <div
               className="card shadow-sm p-4 text-center rounded-4 h-100"
               style={{ cursor: "pointer" }}
-              onClick={() => navigate("/")}
+              onClick={() => navigate("/login")}
             >
               <i className="bi bi-box-arrow-right fs-2 text-danger mb-2"></i>
               <h5>Logout</h5>

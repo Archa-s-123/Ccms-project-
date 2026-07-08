@@ -13,12 +13,14 @@ import Signup from "./pages/Signup";
 import ForgotPassword from "./pages/ForgotPassword";
 import PrivateRoute from "./pages/PrivateRoute";
 import Profile from "./pages/Profile";
+import VerifyOTP from "./pages/VerifyOTP";
+import LandingPage from "./pages/LandingPage";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Login />} />
+        
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={<StudentDashboard />} />
         <Route path="/add-complaint" element={<AddComplaint />} />
@@ -30,6 +32,12 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<Login />} />
+        <Route
+  path="/verify-otp"
+  element={<VerifyOTP />}
+/>
         <Route
   path="/student-dashboard"
   element={

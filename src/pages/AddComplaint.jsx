@@ -25,6 +25,7 @@ formData.append("title", title);
 formData.append("category", category);
 formData.append("description", description);
 formData.append("location", location);
+formData.append("userId", localStorage.getItem("userId"));
 
 if (image) {
   formData.append("image", image);

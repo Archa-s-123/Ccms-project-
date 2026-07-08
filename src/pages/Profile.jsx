@@ -6,6 +6,7 @@ function Profile() {
     console.log("Profile page loaded");
     console.log(localStorage.getItem("userId"));
   const userId = localStorage.getItem("userId");
+  const role = localStorage.getItem("role");
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -88,9 +89,9 @@ function Profile() {
         className="card shadow p-4 mx-auto"
         style={{ maxWidth: "500px" }}
       >
-        <h2 className="text-center mb-4">
-          My Profile
-        </h2>
+       <h2 className="text-center mb-4">
+  {role === "admin" ? "Admin Profile" : "My Profile"}
+</h2>
 
         <div className="text-center mb-4">
 
@@ -170,7 +171,13 @@ function Profile() {
 
 <button
   className="btn btn-secondary w-100 mt-3"
-  onClick={() => navigate("/dashboard")}
+  onClick={() =>
+    navigate(
+      role === "admin"
+        ? "/admin-dashboard"
+        : "/dashboard"
+    )
+  }
 >
   ← Back to Dashboard
 </button>
